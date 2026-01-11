@@ -16,8 +16,8 @@ def load_mnist(n_samples=None):
     """Load MNIST dataset"""
     print("Loading MNIST dataset...")
     mnist = fetch_openml('mnist_784', version=1, parser='auto')
-    X = mnist.data.astype('float32')
-    y = mnist.target.astype('int')
+    X = np.array(mnist.data, dtype='float32')
+    y = np.array(mnist.target, dtype='int')
 
     if n_samples:
         np.random.seed(42)
