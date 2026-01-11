@@ -87,10 +87,25 @@ Compares Euclidean distance vs multiple fractional distances (p=0.3, 0.5, 0.7) a
 - Standard convex optimization
 
 ### Fractional Distance (0 < p < 1)
-- Clustering accuracy: Varies by p value
+- Clustering accuracy: Varies by p value (typically **lower than Euclidean**)
 - Slower than Euclidean (custom Python implementation)
 - Non-convex optimization, may find different cluster structures
 - Lower p values emphasize differences more strongly
+
+### Why Does Fractional Distance Have Lower Accuracy?
+
+Fractional distances (p < 1) typically achieve lower accuracy on MNIST due to:
+
+1. **Not a proper metric** - violates triangle inequality
+2. **Algorithm mismatch** - K-means uses arithmetic mean (optimal for p=2, not p<1)
+3. **Curse of dimensionality** - in 784D, distances lose discriminative power
+4. **Non-convex optimization** - many local minima trap the algorithm
+5. **High initialization sensitivity** - unstable results
+
+**For detailed analysis**, see [ANALYSIS.md](ANALYSIS.md) or run:
+```bash
+python why_fractional_lower_accuracy.py
+```
 
 ## Requirements
 
