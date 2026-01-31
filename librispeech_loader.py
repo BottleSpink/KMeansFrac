@@ -49,22 +49,23 @@ def extract_mfcc_features(audio_array, sample_rate=16000, n_mfcc=13, max_len=100
     return features.flatten()
 
 
-def load_librispeech(n_samples=None, subset="dev-clean", n_mfcc=13, max_len=100):
+def load_librispeech(n_samples=None, subset="dev-clean", n_mfcc=13, max_len=100, streaming=True):
     """
     Load LibriSpeech dataset and extract MFCC features.
 
     Args:
-        n_samples: Number of samples to load (None for all)
+        n_samples: Number of samples to load (None for all, recommended to set a limit)
         subset: LibriSpeech subset to use (default: "dev-clean")
         n_mfcc: Number of MFCC coefficients
         max_len: Maximum time frames for feature extraction
+        streaming: If True, stream data without downloading full dataset (saves disk space)
 
     Returns:
         X: Feature matrix (n_samples, n_features)
         y: Speaker IDs as labels
         metadata: Dictionary with additional info (text, audio_ids)
     """
-    print(f"Loading LibriSpeech {subset} dataset...")
+    print(f"Loading LibriSpeech {subset} dataset (streaming={streaming})...")
 
     # Load dataset from Hugging Face
     # LibriSpeech subsets: train.clean.100, train.clean.360, train.other.500,
@@ -88,16 +89,23 @@ def load_librispeech(n_samples=None, subset="dev-clean", n_mfcc=13, max_len=100)
         "librispeech_asr",
         hf_subset_map.get(subset, "clean"),
         split=split.replace(".", ""),
-        trust_remote_code=True
+        trust_remote_code=True,
+        streaming=streaming
     )
 
-    # Limit samples if specified
-    if n_samples and n_samples < len(dataset):
-        np.random.seed(42)
-        indices = np.random.choice(len(dataset), n_samples, replace=False)
-        dataset = dataset.select(indices)
-
-    print(f"Processing {len(dataset)} audio samples...")
+    if streaming:
+        # With streaming, we iterate and collect n_samples
+        if n_samples is None:
+            n_samples = 500  # Default limit for streaming to avoid memory issues
+            print(f"  Streaming mode: defaulting to {n_samples} samples")
+        print(f"Processing up to {n_samples} audio samples (streaming)...")
+    else:
+        # Non-streaming: limit samples if specified
+        if n_samples and n_samples < len(dataset):
+            np.random.seed(42)
+            indices = np.random.choice(len(dataset), n_samples, replace=False)
+            dataset = dataset.select(indices)
+        print(f"Processing {len(dataset)} audio samples...")
 
     # Extract features
     features_list = []
@@ -106,8 +114,12 @@ def load_librispeech(n_samples=None, subset="dev-clean", n_mfcc=13, max_len=100)
     audio_ids = []
 
     for i, sample in enumerate(dataset):
+        # Stop if we've collected enough samples (streaming mode)
+        if n_samples and i >= n_samples:
+            break
+
         if (i + 1) % 100 == 0:
-            print(f"  Processed {i + 1}/{len(dataset)} samples...")
+            print(f"  Processed {i + 1}/{n_samples if streaming else len(dataset)} samples...")
 
         # Get audio array and sample rate
         audio_array = np.array(sample["audio"]["array"])
