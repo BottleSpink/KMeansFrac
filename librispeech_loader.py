@@ -68,27 +68,21 @@ def load_librispeech(n_samples=None, subset="dev-clean", n_mfcc=13, max_len=100,
     print(f"Loading LibriSpeech {subset} dataset (streaming={streaming})...")
 
     # Load dataset from Hugging Face
-    # LibriSpeech subsets: train.clean.100, train.clean.360, train.other.500,
-    #                     validation.clean, validation.other, test.clean, test.other
-    hf_subset_map = {
-        "dev-clean": "clean",
-        "dev-other": "other",
-        "test-clean": "clean",
-        "test-other": "other",
+    # Config: "clean" or "other"
+    # Splits: "validation", "test", "train.100", "train.360"
+    subset_config = {
+        "dev-clean": ("clean", "validation"),
+        "dev-other": ("other", "validation"),
+        "test-clean": ("clean", "test"),
+        "test-other": ("other", "test"),
     }
 
-    # Determine split name
-    if "dev" in subset:
-        split = "validation." + hf_subset_map.get(subset, "clean")
-    elif "test" in subset:
-        split = "test." + hf_subset_map.get(subset, "clean")
-    else:
-        split = subset
+    config, split = subset_config.get(subset, ("clean", "validation"))
 
     dataset = load_dataset(
         "librispeech_asr",
-        hf_subset_map.get(subset, "clean"),
-        split=split.replace(".", ""),
+        config,
+        split=split,
         trust_remote_code=True,
         streaming=streaming
     )
