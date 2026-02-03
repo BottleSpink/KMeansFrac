@@ -1,0 +1,62 @@
+# Executive Assistant Configuration
+# Define your scheduled tasks and prompts here
+
+# Microsoft 365 Authentication (set via environment variables)
+# MICROSOFT_CLIENT_ID, MICROSOFT_CLIENT_SECRET, MICROSOFT_TENANT_ID
+
+# Your email for receiving EA reports
+user_email: "your-email@company.com"
+
+# Scheduled Tasks
+tasks:
+  # Morning Briefing - runs every weekday at 7:00 AM
+  - name: "morning_briefing"
+    schedule: "0 7 * * 1-5"  # cron format: minute hour day month weekday
+    enabled: true
+    prompt: "daily_briefing"
+    actions:
+      - send_email
+
+  # Meeting Prep - runs 15 minutes before each meeting
+  - name: "meeting_prep"
+    schedule: "before_meeting"
+    minutes_before: 15
+    enabled: true
+    prompt: "meeting_preparation"
+    actions:
+      - send_email
+
+  # End of Day Summary - runs every weekday at 5:00 PM
+  - name: "eod_summary"
+    schedule: "0 17 * * 1-5"
+    enabled: true
+    prompt: "end_of_day_summary"
+    actions:
+      - send_email
+
+  # Weekly Report - runs every Friday at 4:00 PM
+  - name: "weekly_report"
+    schedule: "0 16 * * 5"
+    enabled: true
+    prompt: "weekly_summary"
+    actions:
+      - send_email
+
+  # Email Priority Alert - runs every hour during work hours
+  - name: "priority_emails"
+    schedule: "0 9-17 * * 1-5"
+    enabled: true
+    prompt: "priority_email_check"
+    actions:
+      - send_email
+    conditions:
+      only_if_urgent: true
+
+# Notification Settings
+notifications:
+  email:
+    enabled: true
+    from_name: "Executive Assistant"
+  teams:
+    enabled: false
+    webhook_url: ""

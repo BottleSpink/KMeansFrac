@@ -1,0 +1,14 @@
+# Executive Assistant Dependencies
+
+# Microsoft Graph API
+msal>=1.24.0
+requests>=2.31.0
+
+# Scheduler
+APScheduler>=3.10.0
+
+# Configuration
+PyYAML>=6.0
+
+# Optional: Load .env files
+python-dotenv>=1.0.0

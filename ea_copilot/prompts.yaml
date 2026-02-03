@@ -1,0 +1,178 @@
+# Executive Assistant Prompt Templates
+# These prompts are executed on schedule with Microsoft 365 data
+
+prompts:
+  daily_briefing:
+    name: "Daily Briefing"
+    description: "Morning overview of your day"
+    system: |
+      You are an Executive Assistant preparing a morning briefing.
+      Be concise, professional, and highlight what's most important.
+      Format the output as a clean, scannable email.
+    template: |
+      Prepare my daily briefing for today, {{date}}.
+
+      Today's Calendar:
+      {{calendar_events}}
+
+      Unread Emails ({{email_count}} total):
+      {{recent_emails}}
+
+      Outstanding Tasks:
+      {{tasks}}
+
+      Please provide:
+      1. Key priorities for today (top 3)
+      2. Meeting overview with preparation notes
+      3. Emails requiring immediate attention
+      4. Suggested time blocks for focused work
+
+  meeting_preparation:
+    name: "Meeting Preparation"
+    description: "Context and prep for upcoming meeting"
+    system: |
+      You are an Executive Assistant preparing meeting context.
+      Provide relevant background and suggested talking points.
+    template: |
+      Prepare me for this upcoming meeting:
+
+      Meeting: {{meeting_title}}
+      Time: {{meeting_time}}
+      Attendees: {{attendees}}
+
+      Recent emails with attendees:
+      {{related_emails}}
+
+      Previous meetings with these attendees:
+      {{previous_meetings}}
+
+      Please provide:
+      1. Meeting context and likely agenda
+      2. Key points about each attendee
+      3. Suggested talking points
+      4. Questions I might want to ask
+      5. Any follow-ups from previous interactions
+
+  end_of_day_summary:
+    name: "End of Day Summary"
+    description: "Recap of the day and tomorrow's preview"
+    system: |
+      You are an Executive Assistant providing an end-of-day summary.
+      Help the user close out their day and prepare for tomorrow.
+    template: |
+      Summarize my day for {{date}}.
+
+      Meetings attended:
+      {{completed_meetings}}
+
+      Emails sent/received today:
+      {{email_activity}}
+
+      Tasks completed:
+      {{completed_tasks}}
+
+      Tasks still pending:
+      {{pending_tasks}}
+
+      Tomorrow's calendar:
+      {{tomorrow_calendar}}
+
+      Please provide:
+      1. Key accomplishments today
+      2. Items that need follow-up
+      3. Tomorrow's priorities
+      4. Suggested prep for tomorrow's first meeting
+
+  weekly_summary:
+    name: "Weekly Summary"
+    description: "Weekly recap and next week preview"
+    system: |
+      You are an Executive Assistant providing a weekly executive summary.
+      Focus on high-level accomplishments and strategic priorities.
+    template: |
+      Provide my weekly summary for the week of {{week_start}}.
+
+      This week's meetings:
+      {{week_meetings}}
+
+      Email statistics:
+      - Sent: {{emails_sent}}
+      - Received: {{emails_received}}
+      - Response rate: {{response_rate}}
+
+      Tasks completed this week:
+      {{week_completed_tasks}}
+
+      Tasks carried over:
+      {{carryover_tasks}}
+
+      Next week's calendar:
+      {{next_week_calendar}}
+
+      Please provide:
+      1. Week in review (key accomplishments)
+      2. Metrics snapshot
+      3. Items requiring attention
+      4. Next week's priorities
+      5. Suggested focus areas
+
+  priority_email_check:
+    name: "Priority Email Alert"
+    description: "Check for urgent emails"
+    system: |
+      You are an Executive Assistant monitoring for urgent emails.
+      Only alert if there are genuinely urgent items.
+    template: |
+      Review these recent emails for urgency:
+
+      {{recent_emails}}
+
+      Flag any emails that:
+      1. Are from VIPs or executives
+      2. Mention urgent deadlines
+      3. Require immediate response
+      4. Contain time-sensitive information
+
+      If nothing is urgent, respond with "NO_ALERT".
+      Otherwise, summarize what needs immediate attention.
+
+  email_draft:
+    name: "Draft Email Response"
+    description: "Draft a response to an email"
+    system: |
+      You are an Executive Assistant drafting email responses.
+      Match the tone of the original email. Be professional and concise.
+    template: |
+      Draft a response to this email:
+
+      From: {{sender}}
+      Subject: {{subject}}
+      Content:
+      {{email_content}}
+
+      Context from previous correspondence:
+      {{email_thread}}
+
+      Draft a professional response that:
+      1. Addresses all points raised
+      2. Maintains appropriate tone
+      3. Is concise but complete
+
+  action_items:
+    name: "Extract Action Items"
+    description: "Extract action items from meetings/emails"
+    system: |
+      You are an Executive Assistant extracting action items.
+      Be specific about what needs to be done, by whom, and by when.
+    template: |
+      Extract action items from:
+
+      Source: {{source_type}}
+      Content:
+      {{content}}
+
+      For each action item, provide:
+      1. Task description
+      2. Owner (if mentioned)
+      3. Due date (if mentioned)
+      4. Priority (high/medium/low)
